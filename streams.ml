@@ -56,9 +56,10 @@ let even : int -> bool =
 let odd  : int -> bool =
   fun x -> x mod 2 <> 0
 
+
 (*squares is the stream 1^2,2^2,3^2,...*)
 let squares : int stream =
-  map (fun x -> x * x) (fromn 1)
+  map (fun x -> x * x) (fromn 1) (*map applies function on 1 then moves on to 2*)
 
 (*fibs is the fibonacci stream 0,1,1,2,3,...*)
 let fibs : int stream =
@@ -80,9 +81,10 @@ let primes : int stream =
 let rev_zip_diff : 'a stream -> 'b stream -> ('b * 'a -> 'c) -> ('b * 'a * 'c) stream =
   fun a b f ->
     let rec aux sa sb =
+      (*goes through both streams in parallel*)
       fun () ->
         let ba = (head sb, head sa) in
-        let c = f ba in
+        let c = f ba in (*applying f to pair*)
         Cons ((fst ba, snd ba, c), aux (tail sa) (tail sb))
     in
     aux a b
@@ -92,28 +94,28 @@ let rec printGenList : 'a list -> ('a -> unit) -> unit =
   fun l f ->
     match l with
     | [] -> ()
-    | x :: xs -> f x; printGenList xs f
+    | x :: xs -> f x; printGenList xs f (*returns f applied to x then continues*)
   
 (*printList writes ints separated by spaces to file f*)
 let rec printList : int list -> string -> unit =
-  fun l f ->
-    let oc = open_out f in
+  fun l file ->
+    let oc = open_out file in
     (*print each int followed by a space*)
-    printGenList l (fun x -> output_string oc (string_of_int x ^ " "));
+    printGenList l (fun x -> output_string oc (string_of_int x ^ " ")); (*printGenList recursive so prints everything*)
     close_out oc
   
 
 let rec printPairList : (int * int) list -> string -> unit =
-  fun l f ->
-    let oc = open_out f in
+  fun l file ->
+    let oc = open_out file in
     (*print each pair in the form (x, y) and a space*)
-    printGenList l
+    printGenList l (*printGenList recursive so prints everything*)
       (fun (x,y) ->
          output_string oc ("(" ^ string_of_int x ^ ", " ^ string_of_int y ^ ") "));
     close_out oc
 ;;
 
-
+(*
 printList [2;3;0;1] "even_odd_test.txt";;
 printList (take 10 squares) "squares.txt";;
 printList (take 10 fibs) "fibs.txt";;
@@ -123,3 +125,4 @@ printList (take 10 primes) "primes.txt";;
 let rev_zip_pairs = take 5 (rev_zip_diff evenFibs oddFibs (fun (x,y) -> x - y)) in
 let pair_list = List.map (fun (a,b,c) -> (a,b)) rev_zip_pairs in
 printPairList pair_list "rev_zip_diff.txt";;
+*)
