@@ -115,7 +115,7 @@ let rec printPairList : (int * int) list -> string -> unit =
     close_out oc
 ;;
 
-(*
+(* tests I used:
 printList [2;3;0;1] "even_odd_test.txt";;
 printList (take 10 squares) "squares.txt";;
 printList (take 10 fibs) "fibs.txt";;
